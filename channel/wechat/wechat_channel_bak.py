@@ -9,10 +9,8 @@ import json
 import os
 import threading
 import time
-import re
 
 import requests
-import random
 
 from bridge.context import *
 from bridge.reply import *
@@ -195,8 +193,7 @@ class WechatChannel(ChatChannel):
             logger.debug("[WX]receive voice for group msg: {}".format(cmsg.content))
         elif cmsg.ctype == ContextType.IMAGE:
             logger.debug("[WX]receive image for group msg: {}".format(cmsg.content))
-        elif cmsg.ctype in [ContextType.JOIN_GROUP, ContextType.PATPAT, ContextType.ACCEPT_FRIEND,
-                            ContextType.EXIT_GROUP]:
+        elif cmsg.ctype in [ContextType.JOIN_GROUP, ContextType.PATPAT, ContextType.ACCEPT_FRIEND, ContextType.EXIT_GROUP]:
             logger.debug("[WX]receive note msg: {}".format(cmsg.content))
         elif cmsg.ctype == ContextType.TEXT:
             # logger.debug("[WX]receive group msg: {}, cmsg={}".format(json.dumps(cmsg._rawmsg, ensure_ascii=False), cmsg))
@@ -213,20 +210,8 @@ class WechatChannel(ChatChannel):
     def send(self, reply: Reply, context: Context):
         receiver = context["receiver"]
         if reply.type == ReplyType.TEXT:
-            split_punctuation = ['//n']
-            # 创建一个正则表达式模式，用来分割消息，确保正确处理 '||<'
-            pattern = '|'.join(map(lambda x: re.escape(x), split_punctuation))
-            # 使用正则表达式来分割消息
-            split_messages = re.split(pattern, reply.content)
-            # 移除空行
-            split_messages = [msg.strip() for msg in split_messages if msg.strip() != '']
-
-            for msg in split_messages:
-                # 发送消息
-                itchat.send(msg, toUserName=receiver)
-                logger.info("[WX] sendMsg={}, receiver={}".format(msg, receiver))
-        #    itchat.send(reply.content, toUserName=receiver)
-        #    logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
+            itchat.send(reply.content, toUserName=receiver)
+            logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
         elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
             itchat.send(reply.content, toUserName=receiver)
             logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
@@ -273,7 +258,6 @@ class WechatChannel(ChatChannel):
             itchat.send_video(video_storage, toUserName=receiver)
             logger.info("[WX] sendVideo url={}, receiver={}".format(video_url, receiver))
 
-
 def _send_login_success():
     try:
         from common.linkai_client import chat_client
@@ -282,7 +266,6 @@ def _send_login_success():
     except Exception as e:
         pass
 
-
 def _send_logout():
     try:
         from common.linkai_client import chat_client
@@ -290,7 +273,6 @@ def _send_logout():
             chat_client.send_logout()
     except Exception as e:
         pass
-
 
 def _send_qr_code(qrcode_list: list):
     try:
