@@ -1,9 +1,10 @@
 {
   "channel_type": "wx",
-  "model": "coze",
+  "model": "fengli",
   "coze_api_base": "https://api.coze.cn/open_api/v2",
   "coze_api_key": "pat_NTTExGaaSEiKjAqzdGJziBf8Zy28X0yM5y5JRBp0EPQQbcIx2IJ4CdvFrnM6faf8",
   "coze_bot_id": "7382690470222266383",
+  "fengli_api": "http://127.0.0.1:8800/chat",
   "text_to_image": "dall-e-3",
   "voice_to_text": "openai",
   "text_to_voice": "openai",
@@ -26,5 +27,6 @@
   "subscribe_msg": "",
   "use_linkai": false,
   "linkai_api_key": "",
-  "linkai_app_code": ""
+  "linkai_app_code": "",
+  "wechaty_puppet_service_token": ""
 }

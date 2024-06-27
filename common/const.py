@@ -13,6 +13,7 @@ ZHIPU_AI = "glm-4"
 MOONSHOT = "moonshot"
 COZE = "coze"
 DIFY = "dify"
+FENGLI= "fengli"
 # model
 CLAUDE3 = "claude-3-opus-20240229"
 GPT35 = "gpt-3.5-turbo"

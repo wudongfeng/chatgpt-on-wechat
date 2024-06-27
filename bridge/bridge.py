@@ -38,6 +38,8 @@ class Bridge(object):
             self.btype["chat"] = const.CLAUDEAPI
         if model_type in [const.COZE]:
             self.btype["chat"] = const.COZE
+        if model_type in [const.FENGLI]:
+            self.btype["chat"] = const.FENGLI
 
         if conf().get("use_linkai") and conf().get("linkai_api_key"):
             self.btype["chat"] = const.LINKAI
