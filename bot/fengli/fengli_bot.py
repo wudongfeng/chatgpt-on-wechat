@@ -20,12 +20,22 @@ class FengliBot(Bot):
     def reply(self, query, context=None):
         # acquire reply content
         if context.type == ContextType.TEXT:
+            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            from_user_nickname = context.kwargs.get("msg").from_user_nickname
+            from_user_id = context.kwargs.get("msg").from_user_id
+            to_user_nickname = context.kwargs.get("msg").to_user_nickname
+            to_user_id = context.kwargs.get("msg").to_user_id
+
+            if actual_user_nickname is None or actual_user_nickname == "":
+                nick_name = from_user_nickname
+            else:
+                nick_name = actual_user_nickname
             logger.info("[FENGLI] query={}".format(query))
 
             session_id = context["session_id"]
             session = self.sessions.session_query(query, session_id)
             logger.debug("[FENGLI] session query={}".format(session.messages))
-            reply_content, err = self._reply_text(session_id, session)
+            reply_content, err = self._reply_text(session_id, session, 0, nick_name)
             if err is not None:
                 logger.error("[FENGLI] reply error={}".format(err))
                 return Reply(ReplyType.ERROR, "我暂时遇到了一些问题，请您稍后重试~")
@@ -62,12 +72,12 @@ class FengliBot(Bot):
         except Exception as err:
             logger.error(f"Other error occurred: {err}")
 
-    def _reply_text(self, session_id: str, session: ChatGPTSession, retry_count=0):
+    def _reply_text(self, session_id: str, session: ChatGPTSession, retry_count=0, from_user_nick_name=None):
         try:
             query, chat_history = FengliBot._convert_messages_format(session.messages)
             query_body = {
                 "bot_id": 1,
-                "user_id": "wudongfeng",
+                "nick_name": from_user_nick_name,
                 "message": query
             }
             bot_answer = FengliBot.send_post_request(query_body)
@@ -80,7 +90,7 @@ class FengliBot(Bot):
             if retry_count < 2:
                 time.sleep(3)
                 logger.warn(f"[FENGLI] Exception: {repr(e)} 第{retry_count + 1}次重试")
-                return self._reply_text(session_id, session, retry_count + 1)
+                return self._reply_text(session_id, session, retry_count + 1, from_user_nick_name)
             else:
                 return None, f"[FENGLI] Exception: {repr(e)} 超过最大重试次数"
 
