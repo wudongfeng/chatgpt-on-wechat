@@ -10,12 +10,3 @@ if [ -n "$PID" ]; then
 else
     echo "No process found for app.py"
 fi
-
-# Wait for a second to ensure the process is killed
-sleep 2
-
-# Restart the app.py
-echo "Restarting app.py"
-
-
-nohup python3 app.py & tail -f nohup.out
